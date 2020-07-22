@@ -1,6 +1,6 @@
 FROM node:12.16-slim as builder
 
-ARG STANDALONE
+ARG STANDALONE=1
 
 RUN mkdir /opt/local && apt-get update && apt-get install -y --no-install-recommends git gpg dirmngr ca-certificates wget \
     $([ -n "$STANDALONE" ] || echo "autoconf automake build-essential gettext libtool libgmp-dev \
@@ -8,8 +8,7 @@ RUN mkdir /opt/local && apt-get update && apt-get install -y --no-install-recomm
 
 ARG TESTRUNNER
 
-ENV LIGHTNINGD_VERSION=v0.8.2.1
-ENV LIGHTNINGD_PGP_KEY=15EE8D6CAB0E7F0CF999BFCBD9200E6CD1ADB8F1
+ENV LIGHTNINGD_VERSION=master
 
 RUN [ -n "$STANDALONE" ] || \
     (git clone https://github.com/ElementsProject/lightning.git /opt/lightningd \
@@ -23,22 +22,22 @@ RUN [ -n "$STANDALONE" ] || \
     && rm -r target/share \
     && mv -f target/* /opt/local/)
 
-ENV BITCOIN_VERSION 0.20.0
-ENV BITCOIN_FILENAME bitcoin-$BITCOIN_VERSION-x86_64-linux-gnu.tar.gz
-ENV BITCOIN_URL https://bitcoincore.org/bin/bitcoin-core-$BITCOIN_VERSION/$BITCOIN_FILENAME
-ENV BITCOIN_SHA256 35ec10f87b6bc1e44fd9cd1157e5dfa483eaf14d7d9a9c274774539e7824c427
-ENV BITCOIN_ASC_URL https://bitcoincore.org/bin/bitcoin-core-$BITCOIN_VERSION/SHA256SUMS.asc
-ENV BITCOIN_PGP_KEY 01EA5486DE18A882D4C2684590C8019E36C2E964
+ENV BEYONDCOIN_VERSION 0.16.3
+ENV BEYONDCOIN_FILENAME beyondcoin-$BEYONDCOIN_VERSION-x86_64-linux-gnu.tar.gz
+ENV BEYONDCOIN_URL https://download.beyondcoin.io/beyondcoin-core-$BEYONDCOIN_VERSION/$BEYONDCOIN_FILENAME
+ENV BEYONDCOIN_SHA256 35ec10f87b6bc1e44fd9cd1157e5dfa483eaf14d7d9a9c274774539e7824c427
+ENV BEYONDCOIN_ASC_URL https://download.beyondcoin.io/beyondcoin-core-$BEYONDCOIN_VERSION/SHA256SUMS.asc
+ENV BEYONDCOIN_PGP_KEY 01EA5486DE18A882D4C2684590C8019E36C2E964
 RUN [ -n "$STANDALONE" ] || \
-    (mkdir /opt/bitcoin && cd /opt/bitcoin \
-    && wget -qO "$BITCOIN_FILENAME" "$BITCOIN_URL" \
-    && echo "$BITCOIN_SHA256 $BITCOIN_FILENAME" | sha256sum -c - \
-    && gpg --keyserver keyserver.ubuntu.com --recv-keys "$BITCOIN_PGP_KEY" \
-    && wget -qO bitcoin.asc "$BITCOIN_ASC_URL" \
-    && gpg --verify bitcoin.asc \
-    && cat bitcoin.asc | grep "$BITCOIN_FILENAME" | sha256sum -c - \
-    && BD=bitcoin-$BITCOIN_VERSION/bin \
-    && tar -xzvf "$BITCOIN_FILENAME" $BD/bitcoind $BD/bitcoin-cli --strip-components=1 \
+    (mkdir /opt/beyondcoin && cd /opt/beyondcoin \
+    && wget -qO "$BEYONDCOIN_FILENAME" "$BEYONDCOIN_URL" \
+    && echo "$BEYONDCOIN_SHA256 $BEYONDCOIN_FILENAME" | sha256sum -c - \
+    && gpg --keyserver keyserver.ubuntu.com --recv-keys "$BEYONDCOIN_PGP_KEY" \
+    && wget -qO beyondcoin.asc "$BEYONDCOIN_ASC_URL" \
+    && gpg --verify beyondcoin.asc \
+    && cat beyondcoin.asc | grep "$BEYONDCOIN_FILENAME" | sha256sum -c - \
+    && BD=beyondcoin-$BEYONDCOIN_VERSION/bin \
+    && tar -xzvf "$BEYONDCOIN_FILENAME" $BD/beyondcoind $BD/beyondcoin-cli --strip-components=1 \
     && mv bin/* /opt/local/bin/)
 
 RUN wget -qO /usr/bin/tini "https://github.com/krallin/tini/releases/download/v0.19.0/tini-amd64" \

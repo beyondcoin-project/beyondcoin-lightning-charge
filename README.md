@@ -1,14 +1,6 @@
-# Lightning Charge
+# Beyondcoin Lightning Charge
 
-[![build status](https://api.travis-ci.org/ElementsProject/lightning-charge.svg)](https://travis-ci.org/ElementsProject/lightning-charge)
-[![npm release](https://img.shields.io/npm/v/lightning-charge.svg)](https://www.npmjs.com/package/lightning-charge)
-[![docker release](https://img.shields.io/docker/pulls/shesek/lightning-charge.svg)](https://hub.docker.com/r/shesek/lightning-charge/)
-[![MIT license](https://img.shields.io/github/license/elementsproject/lightning-charge.svg)](https://github.com/ElementsProject/lightning-charge/blob/master/LICENSE)
-[![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-[![IRC](https://img.shields.io/badge/chat-on%20freenode-brightgreen.svg)](https://webchat.freenode.net/?channels=lightning-charge)
-
-
-A drop-in solution for accepting lightning payments, built on top of [c-lightning](https://github.com/ElementsProject/lightning).
+A drop-in solution for accepting lightning payments, built on top of [c-lightning](https://github.com/beyondcoin-project/lightning).
 
 - Simple HTTP REST API, optimized for developer friendliness and ease of integration. Near-zero configuration.
 
@@ -20,10 +12,10 @@ A drop-in solution for accepting lightning payments, built on top of [c-lightnin
 
 ## Getting Started
 
-Setup [c-lightning](https://github.com/ElementsProject/lightning#getting-started) and nodejs (v7.6 or newer), then:
+Setup [c-lightning](https://github.com/beyondcoin-project/lightning#getting-started) and nodejs (v7.6 or newer), then:
 
 ```bash
-$ npm install -g lightning-charge
+$ npm install -g beyondcoin-lightning-charge
 
 $ charged --api-token mySecretToken # defaults: --ln-path ~/.lightning/testnet --db-path ./charge.db --port 9112
 
@@ -32,7 +24,7 @@ $ charged --api-token mySecretToken # defaults: --ln-path ~/.lightning/testnet -
 > Note: if you're running into permission issues, try following
 [these instructions](https://docs.npmjs.com/getting-started/fixing-npm-permissions#option-two-change-npms-default-directory).
 
-That's it! The Lightning Charge REST API is now running and ready to process payments.
+That's it! The Beyondcoin Lightning Charge REST API is now running and ready to process payments.
 You can access it at `http://localhost:9112` using the API access token configured with `--api-token`.
 
 Configuration options may alternatively be provided using environment variables:
@@ -49,15 +41,15 @@ See `$ charged --help` for the full list of available options.
 
 ### Deploy with Docker
 
-To deploy Lightning Charge with Docker, run these commands:
+To deploy Beyondcoin Lightning Charge with Docker, run these commands:
 
 ```bash
 $ mkdir data # make sure to create the folder _before_ running docker
 $ docker run -it -u `id -u` -v `pwd`/data:/data -p 9735:9735 -p 9112:9112 \
-             shesek/lightning-charge --api-token mySecretToken
+             beyondcoin-project/beyondcoin-lightning-charge --api-token mySecretToken
 ```
 
-This will start `bitcoind`, `lightningd` and `charged` and hook them up together.
+This will start `beyondcoind`, `lightningd` and `charged` and hook them up together.
 You will then be able to access the REST API at `http://localhost:9112` using `mySecretToken`.
 
 Runs in `testnet` mode by default, set `NETWORK` to override.
@@ -65,16 +57,16 @@ Runs in `testnet` mode by default, set `NETWORK` to override.
 If you want to experiment in `regtest` mode and don't care about persisting data, this should do:
 
 ```bash
-$ docker run -it -e NETWORK=regtest -p 9112:9112 shesek/lightning-charge --api-token mySecretToken
+$ docker run -it -e NETWORK=regtest -p 9112:9112 beyondcoin-project/beyondcoin-lightning-charge --api-token mySecretToken
 ```
 
 To connect to an existing `lightningd` instance running on the same machine,
 mount the lightning data directory to `/etc/lightning` (e.g. `-v $HOME/.lightning:/etc/lightning`).
 Connecting to remote lightningd instances is currently not supported.
 
-To connect to an existing `bitcoind` instance running on the same machine,
-mount the bitcoin data directory to `/etc/bitcoin` (e.g. `-v $HOME/.bitcoin:/etc/bitcoin`).
-To connect to a remote bitcoind instance, set `BITCOIND_URI=http://[user]:[pass]@[host]:[port]`
+To connect to an existing `beyondcoind` instance running on the same machine,
+mount the beyondcoin data directory to `/etc/beyondcoin` (e.g. `-v $HOME/.beyondcoin:/etc/beyondcoin`).
+To connect to a remote beyondcoind instance, set `BITCOIND_URI=http://[user]:[pass]@[host]:[port]`
 (or use `__cookie__:...` as the login for cookie-based authentication).
 
 ### Deploy to Azure
@@ -92,7 +84,7 @@ For other languages, you can use the REST API directly using a standard HTTP lib
 
 ## LApps
 
-Below are example LApps built on top of Lightning Charge:
+Below are example LApps built on top of Beyondcoin Lightning Charge:
 
 - [FileBazaar](https://github.com/ElementsProject/filebazaar): an ecommerce tool for content creators that produce digital files like photos, videos, or music.
 
@@ -294,19 +286,19 @@ ws.addEventListener('message', msg => {
 
 ## Tests
 
-Requires `bitcoind`, `bitcoin-cli`, `lightningd`, `lightning-cli`
+Requires `beyondcoind`, `beyondcoin-cli`, `lightningd`, `lightning-cli`
 and [`jq`](https://stedolan.github.io/jq/download/) to be in your `PATH`.
 
 ```bash
-$ git clone https://github.com/ElementsProject/lightning-charge.git
+$ git clone https://github.com/beyondcoin-project/beyondcoin-lightning-charge.git
 $ cd lightning-charge
 $ npm install
 $ npm test
 ```
 
-This will setup a temporary testing environment with a bitcoind regtest node
+This will setup a temporary testing environment with a beyondcoind regtest node
 and two c-lightning nodes with a funded channel,
-then start the Lightning Charge server and run the unit tests
+then start the Beyondcoin Lightning Charge server and run the unit tests
 (written with [mocha](https://mochajs.org/) and [supertest](https://github.com/visionmedia/supertest)).
 
 To run in verbose mode, set the `VERBOSE` environment variable: `$ VERBOSE=1 npm test`.
